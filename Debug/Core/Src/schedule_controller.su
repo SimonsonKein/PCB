@@ -1,0 +1,5 @@
+../Core/Src/schedule_controller.c:16:12:grow_to_fit	24	static
+../Core/Src/schedule_controller.c:28:6:ScheduleController_Init	8	static
+../Core/Src/schedule_controller.c:37:5:ScheduleController_Schedule	24	static,ignoring_inline_asm
+../Core/Src/schedule_controller.c:58:5:ScheduleController_ScheduleFromISR	24	static,ignoring_inline_asm
+../Core/Src/schedule_controller.c:76:6:ScheduleController_Process	32	static,ignoring_inline_asm

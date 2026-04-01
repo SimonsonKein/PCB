@@ -1,0 +1,13 @@
+../Core/Src/led/led_controller.c:7:13:toggle_led	4	static
+../Core/Src/led/led_controller.c:11:13:turn_off_led	4	static
+../Core/Src/led/led_controller.c:15:13:turn_on_led	4	static
+../Core/Src/led/led_controller.c:26:6:LED_Controller_Init	8	static
+../Core/Src/led/led_controller.c:33:6:LED_Controller_SetAnimation	16	static
+../Core/Src/led/led_controller.c:60:6:LED_Controller_Process	4	static
+../Core/Src/led/led_controller.c:68:6:LED_Controller_NextAnimation	16	static
+../Core/Src/led/led_controller.c:73:6:LED_Controller_PrevAnimation	16	static
+../Core/Src/led/led_controller.c:81:13:blink_toggle_cb	8	static
+../Core/Src/led/led_controller.c:89:13:short_pulse_on_cb	8	static
+../Core/Src/led/led_controller.c:95:13:short_pulse_off_cb	8	static
+../Core/Src/led/led_controller.c:103:13:long_pulse_on_cb	8	static
+../Core/Src/led/led_controller.c:108:13:long_pulse_off_cb	8	static

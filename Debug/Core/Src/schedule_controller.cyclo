@@ -1,0 +1,5 @@
+../Core/Src/schedule_controller.c:16:12:grow_to_fit	5
+../Core/Src/schedule_controller.c:28:6:ScheduleController_Init	3
+../Core/Src/schedule_controller.c:37:5:ScheduleController_Schedule	4
+../Core/Src/schedule_controller.c:58:5:ScheduleController_ScheduleFromISR	3
+../Core/Src/schedule_controller.c:76:6:ScheduleController_Process	6
