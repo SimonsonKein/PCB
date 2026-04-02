@@ -48,6 +48,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined source files
     Core/Src/schedule_controller.c
     Core/Src/led/led_controller.c
+    Core/Src/controller/pwm_controller.c
 )
 
 # Add include paths

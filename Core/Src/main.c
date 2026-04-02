@@ -23,6 +23,9 @@
 /* USER CODE BEGIN Includes */
 #include "led/led_controller.h"
 #include "schedule_controller.h"
+#include "stm32l4xx_hal_gpio.h"
+#include "stm32l4xx_hal_tim.h"
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,16 +44,168 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim2;
+
 UART_HandleTypeDef huart2;
 
+  
 /* USER CODE BEGIN PV */
 
+/* Notes as float frequencies (Hz) */
+
+
+/* Song note structure - frequency and duration */
+typedef struct {
+  float frequency;    /* Frequency in Hz (0 = silence/rest) */
+  uint16_t duration;  /* Duration in milliseconds */
+} NoteEvent_t;
+
+
+
+/* Simplified Gravity Falls main theme motif */
+static const NoteEvent_t song_gravity_falls[] = {
+    {F4, 150},
+    
+  {D4, 150},
+    {A3, 150},
+    {D4, 150},
+
+    {F4, 150},
+    {D4, 150},
+    {A3, 150},
+    {D4, 150},
+
+    {F4, 150},
+    {C4, 150},
+    {A3, 150},
+    {C4, 150},
+
+    {F4, 150},
+    {C4, 150},
+    {A3, 150},
+    {C4, 150},
+
+    {E4, 150},
+    {D4b, 150},
+    {A3, 150},
+    {D4b, 150},
+
+    {E4, 150},
+    {D4b, 150},
+    {A3, 150},
+    {D4b, 150},
+
+    {E4, 150},
+    {D4b, 150},
+    {A3, 150},
+    {D4b, 150},
+
+    {E4, 150},
+    {D4b, 150},
+    {A3, 150},
+    {D4b, 150},
+
+
+    {D4, 600},
+    {E4, 300},
+    {F4, 600},
+    {0, 50},
+
+    {A4, 300},
+    {G4, 300},
+    {A4, 300},
+    {C4, 600},
+    {0, 50},
+
+    {D4, 600},
+    {E4, 300},
+    {F4, 300},
+    {E4, 300},
+
+    {G4, 300},
+    {A4, 300},
+    {G4, 300},
+    {F4, 300},
+    {0, 50},
+
+    {F4, 150},
+    {F4, 150},
+    {F4, 150},
+
+    {A4, 150},
+    {A4, 150},
+    {G4, 150},
+    {F4, 150},
+    {0, 50},
+
+    {A4, 150},
+    {A4, 150},
+    {A4, 150},
+    {G4, 150},
+    {A4, 150},
+    {G4, 150},
+    {F4, 150},
+    {0, 50},
+
+    {F4, 150},
+    {F4, 150},
+    {F4, 150},
+    {A4, 150},
+    {A4, 150},
+    {G4, 150},
+    {F4, 150},
+    {0, 100},
+
+
+    {A4, 150},
+    {A4, 150},
+    {A4, 150},
+    {0, 150},
+
+    {D5b, 150},
+    {D5b, 150},
+    {D5b, 150},
+    {0, 150},
+
+    {F4, 150},
+    {F4, 150},
+    {F4, 150},
+    {A4, 150},
+    {A4, 150},
+    {G4, 150},
+
+    {F4, 150},
+{0, 150},
+
+    {B4b, 150},
+    {B4b, 150},
+    {B4b, 150},
+    {G4, 300},
+    {C5, 300},
+    {A4, 300},
+    {D5b, 300},
+
+    {F4, 150},
+    {D4, 150},
+    {F4, 150},
+    {A4, 150},
+    {E4, 150},
+    {D4b, 150},
+    {A4, 150},
+    {D5b, 100},
+    {D5, 300},
+
+    {D3, 400}
+};
+
+#define GRAVITY_FALLS_LENGTH (sizeof(song_gravity_falls) / sizeof(song_gravity_falls[0]))
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 /* USER CODE END PFP */
 
@@ -89,6 +244,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
@@ -103,12 +259,16 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+      /* USER CODE BEGIN WHILE */
+    
+
+
+
+
   while (1)
   {
-      LED_Controller_Process();
-      /* run scheduled callbacks */
       ScheduleController_Process();
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -163,6 +323,65 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 79;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 1000;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 10;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+  HAL_TIM_MspPostInit(&htim2);
+
 }
 
 /**
@@ -245,15 +464,101 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+
+static void play_note_impl(float frequency, uint16_t duration)
+{
+  (void)duration;
+  if (frequency <= 0.0f) {
+        /* Rest/silence */
+        HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+    } else {
+        /* Calculate timer parameters for desired frequency
+         * System clock: 80 MHz
+         * Formula: freq = timer_clock / (prescaler * (period + 1))
+         * We use period = 1000 for good resolution
+         */
+        float timer_clock = 80000000.0f;  /* 80 MHz */
+        uint32_t period = 1000;
+        uint32_t prescaler = (uint32_t)((timer_clock / (frequency * (float)period)) - 1.0f);
+        
+        /* Limit prescaler to 16-bit */
+        if (prescaler > 65535) prescaler = 65535;
+        if (prescaler < 1) prescaler = 1;
+        
+        __HAL_TIM_SET_PRESCALER(&htim2, prescaler);
+        __HAL_TIM_SET_AUTORELOAD(&htim2, period);
+
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, /* (period / 100)*1 */5);  //1% duty cycle for square wave
+        
+        HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+    }
+}
+
+/**
+ * @brief Stop note callback (used by scheduler)
+ */
+static void stop_note_callback(void)
+{
+    HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+}
+/**
+ * @brief Play a song from a note sequence
+ * @param song Array of NoteEvent_t structures
+ * @param num_notes Number of notes in the song
+ */
+static const NoteEvent_t *g_song = NULL;
+static size_t g_song_length = 0;
+static size_t g_song_index = 0;
+
+void Play_Note(float frequency, uint16_t duration)
+{
+    play_note_impl(frequency, duration);
+    
+    /* Schedule note stop after duration */
+    ScheduleController_Schedule(duration, stop_note_callback);
+}
+
+static void song_step_cb(void)
+{
+    if (g_song == NULL || g_song_index >= g_song_length) {
+        return;
+    }
+
+    const NoteEvent_t note = g_song[g_song_index++];
+    Play_Note(note.frequency, note.duration);
+
+    if (g_song_index < g_song_length) {
+        ScheduleController_Schedule(note.duration, song_step_cb);
+    }
+}
+
+void play_song_internal(const NoteEvent_t *song, size_t num_notes)
+{
+    g_song = song;
+    g_song_length = num_notes;
+    g_song_index = 0;
+
+    if (g_song == NULL || g_song_length == 0) {
+        HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+        return;
+    }
+
+    song_step_cb();
+}
+
+
+void Play_GravityFallsTheme(void)
+{
+  play_song_internal(song_gravity_falls, GRAVITY_FALLS_LENGTH);
+}
+
+
 uint32_t press_start_time = 0;
 uint8_t is_pressed = 0;
 
 
 volatile uint8_t click_count = 0;
 volatile uint8_t click_timer_armed = 0;
-void toggle_led() {
-  GPIOA->ODR ^= GPIO_ODR_OD5;
-}
 
 static void evaluate_clicks_cb(void)
 {
@@ -262,7 +567,8 @@ static void evaluate_clicks_cb(void)
     click_timer_armed = 0;
 
     if (count == 1) {
-        toggle_led();
+      LED_Controller_Toggle();
+      Play_GravityFallsTheme();
     } else if (count == 2) {
         LED_Controller_PrevAnimation();
     } else if (count >= 3) {
@@ -270,8 +576,8 @@ static void evaluate_clicks_cb(void)
     }
 }
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+  
     if (GPIO_Pin == B1_Pin)
     {
         if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_RESET)
@@ -287,8 +593,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
                 if (duration > 500)
                 {
-                    toggle_led();
-                    (void)ScheduleController_ScheduleFromISR(100, toggle_led);
+                    LED_Controller_Toggle();
+                    (void)ScheduleController_ScheduleFromISR(100, LED_Controller_Toggle);
 
                     click_count = 0;
                     click_timer_armed = 0;

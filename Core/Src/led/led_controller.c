@@ -4,7 +4,7 @@
 static LED_Animation_t current_animation = LED_OFF;
 static uint32_t last_tick = 0;
 
-static void toggle_led(void) {
+void LED_Controller_Toggle(void) {
   GPIOA->ODR ^= GPIO_ODR_OD5;
 }
 
@@ -80,7 +80,7 @@ void LED_Controller_PrevAnimation(void) {
 /* Blink: toggle and reschedule only if still in BLINK animation */
 static void blink_toggle_cb(void) {
     if (current_animation != LED_BLINK) return;
-    toggle_led();
+    LED_Controller_Toggle();
     /* reschedule */
     ScheduleController_Schedule(100, blink_toggle_cb);
 }

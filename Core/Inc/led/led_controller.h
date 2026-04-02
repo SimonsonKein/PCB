@@ -13,7 +13,7 @@ typedef enum {
 
 void LED_Controller_Init(void);
 void LED_Controller_SetAnimation(LED_Animation_t animation);
-void LED_Controller_Process(void);
+void LED_Controller_Toggle(void);
 
 /* convenience helpers */
 void LED_Controller_NextAnimation(void);
