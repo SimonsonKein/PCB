@@ -37,6 +37,15 @@ def run_indent(input_path: str, output_path: str) -> int:
 def main() -> int:
     args = sys.argv[1:]
 
+    # VS Code formatter extensions probe availability with --version.
+    if "--version" in args or "-version" in args:
+        sys.stdout.write("custom-clang-format 1.0\n")
+        return 0
+
+    if "--help" in args or "-h" in args:
+        sys.stdout.write("custom-clang-format: clang-format compatible wrapper\n")
+        return 0
+
     in_place = "-i" in args
 
     # Pick the last positional argument as file path if present.

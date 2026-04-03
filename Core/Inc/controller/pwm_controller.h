@@ -2,6 +2,9 @@
 #define INC_PWM_CONTROLLER_H_
 
 #include "main.h"
+#include "schedule_controller.h"
+
+#pragma region Note Frequencies
 
 /**
  * @brief Note frequencies (Hz)
@@ -184,9 +187,11 @@
 #define B8b 7458.62f
 #define B8 7902.13f
 
+#pragma endregion
+
 typedef struct {
-  float frequency;
-  uint16_t duration;
+    float frequency;
+    uint16_t duration;
 } NoteEvent_t;
 
 static const NoteEvent_t song_gravity_falls[] = {
@@ -218,11 +223,9 @@ static const NoteEvent_t song_gravity_falls[] = {
 
     {A4, 150},  {A4, 150},  {G4, 150},  {F4, 150},  {0, 50},
 
-    {A4, 150},  {A4, 150},  {A4, 150},  {G4, 150},  {A4, 150}, {G4, 150},
-    {F4, 150},  {0, 50},
+    {A4, 150},  {A4, 150},  {A4, 150},  {G4, 150},  {A4, 150}, {G4, 150},  {F4, 150},  {0, 50},
 
-    {F4, 150},  {F4, 150},  {F4, 150},  {A4, 150},  {A4, 150}, {G4, 150},
-    {F4, 150},  {0, 100},
+    {F4, 150},  {F4, 150},  {F4, 150},  {A4, 150},  {A4, 150}, {G4, 150},  {F4, 150},  {0, 100},
 
     {A4, 150},  {A4, 150},  {A4, 150},  {0, 150},
 
@@ -232,19 +235,18 @@ static const NoteEvent_t song_gravity_falls[] = {
 
     {F4, 150},  {0, 150},
 
-    {B4b, 150}, {B4b, 150}, {B4b, 150}, {G4, 300},  {C5, 300}, {A4, 300},
-    {D5b, 300},
+    {B4b, 150}, {B4b, 150}, {B4b, 150}, {G4, 300},  {C5, 300}, {A4, 300},  {D5b, 300},
 
-    {F4, 150},  {D4, 150},  {F4, 150},  {A4, 150},  {E4, 150}, {D4b, 150},
-    {A4, 150},  {D5b, 100}, {D5, 300},
+    {F4, 150},  {D4, 150},  {F4, 150},  {A4, 150},  {E4, 150}, {D4b, 150}, {A4, 150},  {D5b, 100},
+    {D5, 300},
 
     {D3, 400}};
 
 static const size_t GRAVITY_FALLS_LENGTH =
     sizeof(song_gravity_falls) / sizeof(song_gravity_falls[0]);
 
-void PWM_Controller_Init(TIM_HandleTypeDef *htim);
-void PWM_Controller_Toggle(void);
+void PWM_Controller_Init(TIM_HandleTypeDef* htim);
+void ScheduleController_Cancel(schedule_callback_t cb);
 void PWM_Controller_Next_Song(void);
 
 #endif

@@ -16,21 +16,26 @@
     "editor.formatOnPaste": true,
     "editor.formatOnSaveMode": "file",
     "C_Cpp.formatting": "clangFormat",
-    "C_Cpp.clang_format_path": "${workspaceFolder}/tools/custom-clang-format",
+    "C_Cpp.clang_format_path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-format",
     "C_Cpp.clang_format_style": "file",
-    "C_Cpp.clang_format_fallbackStyle": "LLVM",
-    "[c]" : {
-        "editor.defaultFormatter": "STMicroelectronics.stm32cube-ide-clangd",
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0}",
+    "clang-format.executable": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-format",
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
         "editor.formatOnSave": true,
         "editor.formatOnPaste": true
     },
-    "[cpp]" : {
-        "editor.defaultFormatter": "xaver.clang-format",
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
         "editor.formatOnSave": true,
         "editor.formatOnPaste": true
     },
-    "[html]": {
-        "editor.foldingStrategy": "indentation"
-      },
-    
+    "files.autoSave": "onFocusChange",
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "C_Cpp.vcFormat.indent.accessSpecifiers": true,
+    "C_Cpp.vcFormat.indent.caseContentsWhenBlock": true,
+    "C_Cpp.vcFormat.indent.caseLabels": true,
+    "C_Cpp.vcFormat.indent.preserveWithinParentheses": true,
+    "C_Cpp.vcFormat.indent.preserveComments": true,
+    "intellij-idea-keybindings.useCamelHumpsWords": true
 }
