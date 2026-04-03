@@ -15,6 +15,12 @@ The firmware runs a lightweight event loop in main:
 
 This structure keeps ISR work short and moves higher-level logic to non-interrupt context.
 
+Quick use:
+- short single click on `B1_Pin`: toggle LED
+- short double click on `B1_Pin`: switch to next LED animation and start next song
+- short triple click (or more) on `B1_Pin`: switch to previous LED animation and start next song
+- long press on `B1_Pin` (>500 ms): trigger one LED blink indication
+
 ## Hardware Assumptions
 
 - Board class: Nucleo-L476RG (or compatible STM32L476)
