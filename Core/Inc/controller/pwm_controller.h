@@ -1,10 +1,19 @@
-#ifndef INC_LED_CONTROLLER_H_
-#define INC_LED_CONTROLLER_H_
+#ifndef INC_PWM_CONTROLLER_H_
+#define INC_PWM_CONTROLLER_H_
 
 #include "main.h"
 
-#if 0 /* USER CODE BEGIN Includes */
+/**
+ * @brief Note frequencies (Hz)
+    * These are defined as floats for convenience in calculations, even though
+        the actual implementation may use integer math for timer settings.
+    * The naming convention is: [Note][Accidental][Octave], where:
+    * - Note: C, D, E, F, G, A, B
+    * - Accidental: s for sharp, b for flat (e.g., C# is Cs, Db is Db)
+    * - Octave: 0-8 (C4 is middle C)
+ */
 
+/* Octave 0 */
 #define C0 16.35f
 #define C0s 17.32f
 #define D0b 17.32f
@@ -14,7 +23,7 @@
 #define E0 20.60f
 #define F0 21.83f
 #define F0s 23.12f
-#define G0b 23.12f
+#define G0b 22.12f
 #define G0 24.50f
 #define G0s 25.96f
 #define A0b 25.96f
@@ -23,6 +32,7 @@
 #define B0b 29.14f
 #define B0 30.87f
 
+/* Octave 1 */
 #define C1 32.70f
 #define C1s 34.65f
 #define D1b 34.65f
@@ -41,6 +51,7 @@
 #define B1b 58.27f
 #define B1 61.74f
 
+/* Octave 2 */
 #define C2 65.41f
 #define C2s 69.30f
 #define D2b 69.30f
@@ -59,6 +70,7 @@
 #define B2b 116.54f
 #define B2 123.47f
 
+/* Octave 3 */
 #define C3 130.81f
 #define C3s 138.59f
 #define D3b 138.59f
@@ -77,6 +89,7 @@
 #define B3b 233.08f
 #define B3 246.94f
 
+/* Octave 4 */
 #define C4 261.63f
 #define C4s 277.18f
 #define D4b 277.18f
@@ -95,6 +108,7 @@
 #define B4b 466.16f
 #define B4 493.88f
 
+/* Octave 5 */
 #define C5 523.25f
 #define C5s 554.37f
 #define D5b 554.37f
@@ -113,6 +127,7 @@
 #define B5b 932.33f
 #define B5 987.77f
 
+/* Octave 6 */
 #define C6 1046.50f
 #define C6s 1108.73f
 #define D6b 1108.73f
@@ -131,6 +146,7 @@
 #define B6b 1864.66f
 #define B6 1975.53f
 
+/* Octave 7 */
 #define C7 2093.00f
 #define C7s 2217.46f
 #define D7b 2217.46f
@@ -149,6 +165,7 @@
 #define B7b 3729.31f
 #define B7 3951.07f
 
+/* Octave 8 */
 #define C8 4186.01f
 #define C8s 4434.92f
 #define D8b 4434.92f
@@ -167,10 +184,66 @@
 #define B8b 7458.62f
 #define B8 7902.13f
 
-#endif /* USER CODE END Includes */
+typedef struct {
+  float frequency;
+  uint16_t duration;
+} NoteEvent_t;
 
+static const NoteEvent_t song_gravity_falls[] = {
+    {F4, 150},  {D4, 150},  {A3, 150},  {D4, 150},
 
-void PWM_Controller_Init(void);
+    {F4, 150},  {D4, 150},  {A3, 150},  {D4, 150},
+
+    {F4, 150},  {C4, 150},  {A3, 150},  {C4, 150},
+
+    {F4, 150},  {C4, 150},  {A3, 150},  {C4, 150},
+
+    {E4, 150},  {D4b, 150}, {A3, 150},  {D4b, 150},
+
+    {E4, 150},  {D4b, 150}, {A3, 150},  {D4b, 150},
+
+    {E4, 150},  {D4b, 150}, {A3, 150},  {D4b, 150},
+
+    {E4, 150},  {D4b, 150}, {A3, 150},  {D4b, 150},
+
+    {D4, 600},  {E4, 300},  {F4, 600},  {0, 50},
+
+    {A4, 300},  {G4, 300},  {A4, 300},  {C4, 600},  {0, 50},
+
+    {D4, 600},  {E4, 300},  {F4, 300},  {E4, 300},
+
+    {G4, 300},  {A4, 300},  {G4, 300},  {F4, 300},  {0, 50},
+
+    {F4, 150},  {F4, 150},  {F4, 150},
+
+    {A4, 150},  {A4, 150},  {G4, 150},  {F4, 150},  {0, 50},
+
+    {A4, 150},  {A4, 150},  {A4, 150},  {G4, 150},  {A4, 150}, {G4, 150},
+    {F4, 150},  {0, 50},
+
+    {F4, 150},  {F4, 150},  {F4, 150},  {A4, 150},  {A4, 150}, {G4, 150},
+    {F4, 150},  {0, 100},
+
+    {A4, 150},  {A4, 150},  {A4, 150},  {0, 150},
+
+    {D5b, 150}, {D5b, 150}, {D5b, 150}, {0, 150},
+
+    {F4, 150},  {F4, 150},  {F4, 150},  {A4, 150},  {A4, 150}, {G4, 150},
+
+    {F4, 150},  {0, 150},
+
+    {B4b, 150}, {B4b, 150}, {B4b, 150}, {G4, 300},  {C5, 300}, {A4, 300},
+    {D5b, 300},
+
+    {F4, 150},  {D4, 150},  {F4, 150},  {A4, 150},  {E4, 150}, {D4b, 150},
+    {A4, 150},  {D5b, 100}, {D5, 300},
+
+    {D3, 400}};
+
+static const size_t GRAVITY_FALLS_LENGTH =
+    sizeof(song_gravity_falls) / sizeof(song_gravity_falls[0]);
+
+void PWM_Controller_Init(TIM_HandleTypeDef *htim);
 void PWM_Controller_Toggle(void);
 void PWM_Controller_Next_Song(void);
 

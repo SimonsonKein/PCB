@@ -4,11 +4,11 @@
 #include "main.h"
 
 typedef enum {
-    LED_OFF,
-    LED_ON,
-    LED_BLINK,
-    LED_SHORT_PULSE,
-    LED_LONG_PULSE
+  LED_OFF,
+  LED_ON,
+  LED_BLINK,
+  LED_SHORT_PULSE,
+  LED_LONG_PULSE
 } LED_Animation_t;
 
 void LED_Controller_Init(void);
